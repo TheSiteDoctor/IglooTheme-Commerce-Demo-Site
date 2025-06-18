@@ -1,0 +1,36 @@
+﻿@using IglooTheme.Commerce.Extensions
+@using IglooTheme.Commerce.Views.Shared.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@{
+    var settingsPublishedModel = Model.Settings;
+    var invokeModel = new BasketDiscountInvokeDto
+    {
+        ApplyButtonSettings = new TextButtonSettings
+        {
+            Text = settingsPublishedModel.Value<string>("applyDiscountItemButtonText"),
+            Size = settingsPublishedModel.Value<string>("applyDiscountItemButtonSize"),
+            Style = settingsPublishedModel.Value<string>("applyDiscountItemButtonStyle")
+        },
+        RemoveButtonSettings = new IconButtonSettings
+        {
+
+            Colour = settingsPublishedModel.Value<string>("removeDiscountItemButtonColour"),
+            Size = settingsPublishedModel.Value<string>("removeDiscountItemButtonSize"),
+            Style = settingsPublishedModel.Value<string>("removeDiscountItemButtonStyle")
+        },
+        ContainerWidthCssClass = settingsPublishedModel.Value<string>("containerWidth"),
+        StyleVariableOverrides = settingsPublishedModel.GenerateWidgetStyleVariables(),
+        DiscountFieldLabel = settingsPublishedModel.Value<string>("discountFieldLabel") ?? string.Empty,
+        DiscountFieldRenderMode = settingsPublishedModel.Value<string>("discountFieldRenderMode"),
+        CustomCssClassesList = settingsPublishedModel.Value<List<string>>("CustomCssClasses")
+
+    };
+}
+<div class="basket-discounts-widget__container">
+    @await Component.InvokeAsync("BasketDiscounts",invokeModel)
+</div>
+
+<script>
+const basketDiscountInvokeModel = @Html.Raw(Json.Serialize(invokeModel));
+     WidgetHelper.reRenderOnBasketEmptied("BasketDiscounts", "basket-discounts-widget__container", basketDiscountInvokeModel)
+ </script>
